@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Atelier — Luxury AI Jewellery Stylist</title>
+    <!-- Premium SVG Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234A0E17'/><path d='M50 15 L85 40 L50 85 L15 40 Z' fill='%23D4AF37'/><path d='M50 25 L75 42 L50 75 L25 42 Z' fill='%23E0A899'/><circle cx='50' cy='45' r='12' fill='%23FFFFFF'/></svg>" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF8F5',
+                        roseGold: '#E0A899',
+                        luxuryGold: '#D4AF37',
+                        deepBurgundy: '#4A0E17',
+                        charcoal: '#222222',
+                        mutedBlush: '#F7EBE8',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar & Animations */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #FAF8F5; }
+        ::-webkit-scrollbar-thumb { background: #E0A899; border-radius: 3px; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(224, 168, 153, 0.2);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes floatOrb {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.25; }
+            50% { transform: translateY(-20px) scale(1.05); opacity: 0.45; }
+        }
+        .animate-float-orb {
+            animation: floatOrb 8s ease-in-out infinite;
+        }
+        .dynamic-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dynamic-card:hover {
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 0 25px 50px -12px rgba(224, 168, 153, 0.25);
+            border-color: rgba(224, 168, 153, 0.6);
+        }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spinSlow 12s linear infinite;
+        }
+        @keyframes goldDust {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-180px) rotate(360deg); opacity: 0; }
+        }
+        .gold-dust {
+            position: absolute;
+            pointer-events: none;
+            animation: goldDust 2.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-cream text-charcoal font-sans min-h-screen flex flex-col selection:bg-roseGold selection:text-white relative overflow-x-hidden">
+    <!-- Luxury Intro Splash Screen Overlay -->
+    <div id="splash-screen" class="fixed inset-0 bg-deepBurgundy z-[100] flex flex-col items-center justify-center space-y-6 transition-all duration-1000 ease-out">
+        <div class="relative flex items-center justify-center">
+            <div class="absolute w-32 h-32 bg-roseGold/20 rounded-full blur-2xl animate-pulse"></div>
+            <i data-lucide="sparkles" class="w-16 h-16 text-roseGold animate-spin-slow relative z-10"></i>
+        </div>
+        <div class="space-y-2 text-center">
+            <h1 class="font-serif text-5xl text-white tracking-widest uppercase font-bold">Aura <span class="font-sans font-light text-roseGold">Stylist</span></h1>
+            <p class="text-xs font-medium tracking-[0.3em] text-roseGold/80 uppercase">AI Luxury Jewellery Atelier</p>
+        </div>
+        <div class="w-48 h-0.5 bg-white/10 rounded-full overflow-hidden relative shadow-inner">
+            <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-roseGold via-white to-roseGold w-full animate-[shimmer_1.5s_infinite]"></div>
+        </div>
+    </div>
+    <!-- Live Floating Ambient Luxury Orbs -->
+    <div class="absolute top-12 left-10 w-96 h-96 bg-roseGold/20 rounded-full blur-3xl animate-float-orb pointer-events-none"></div>
+    <div class="absolute top-1/3 right-5 w-[30rem] h-[30rem] bg-mutedBlush/20 rounded-full blur-3xl animate-float-orb pointer-events-none" style="animation-delay: 3s;"></div>
+    <div class="absolute bottom-20 left-1/4 w-80 h-80 bg-roseGold/15 rounded-full blur-3xl animate-float-orb pointer-events-none" style="animation-delay: 6s;"></div>
+
+    <!-- Navigation -->
+    <header class="border-b border-roseGold/20 bg-cream/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="p-2 bg-roseGold/20 rounded-full text-deepBurgundy">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </span>
+                <h1 class="font-serif text-2xl font-bold tracking-wide text-deepBurgundy">Aura <span class="font-sans font-light text-lg text-roseGold tracking-widest uppercase">Stylist</span></h1>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm tracking-wider uppercase text-charcoal/80">
+                <a href="#upload" class="hover:text-roseGold transition">Style Studio</a>
+                <a href="#how-it-works" class="hover:text-roseGold transition">The Experience</a>
+                <a href="#inspiration" class="hover:text-roseGold transition">Lookbook</a>
+                <button onclick="openWardrobeModal()" class="hover:text-roseGold transition flex items-center space-x-1.5 relative">
+                    <i data-lucide="bookmark" class="w-4 h-4"></i>
+                    <span>My Wardrobe</span>
+                    <span id="wardrobe-badge" class="absolute -top-2 -right-3 bg-roseGold text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow hidden">0</span>
+                </button>
+            </nav>
+            <div>
+                <a href="#upload" class="px-6 py-2.5 bg-deepBurgundy text-white font-medium text-sm tracking-wider uppercase rounded-full hover:bg-deepBurgundy/90 shadow-lg shadow-deepBurgundy/20 transition transform active:scale-95">Style My Outfit</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="flex-grow max-w-7xl mx-auto px-6 py-12 w-full">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-6">
+            <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-roseGold/15 text-deepBurgundy font-medium text-xs tracking-widest uppercase">
+                <i data-lucide="gem" class="w-3.5 h-3.5"></i>
+                <span>AI-Powered Luxury Styling</span>
+            </div>
+            <h2 class="font-serif text-5xl md:text-6xl font-bold text-deepBurgundy leading-tight">Discover the Perfect Jewellery for Your Outfit</h2>
+            <p class="text-lg text-charcoal/70 font-light leading-relaxed">Upload your lehenga, saree, gown, or modern ensemble. Our multimodal AI analyzes your neckline, embroidery, and color palette to curate exquisite, balanced jewellery pairings with intelligent styling insights.</p>
+        </div>
+
+        <!-- Studio Container -->
+        <div id="upload" class="max-w-4xl mx-auto">
+            <!-- Feature 1: Image Upload Area -->
+            <div id="upload-card" class="glass-card rounded-3xl p-8 md:p-12 shadow-xl transition-all duration-500">
+                <div class="border-2 border-dashed border-roseGold/40 rounded-2xl p-8 text-center hover:border-roseGold bg-white/50 transition group cursor-pointer relative" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" onchange="handleImageSelect(event)">
+                    
+                    <div id="upload-placeholder" class="space-y-6 py-8">
+                        <div class="w-20 h-20 bg-mutedBlush rounded-full flex items-center justify-center mx-auto text-roseGold group-hover:scale-110 transition transform duration-300 shadow-inner">
+                            <i data-lucide="camera" class="w-10 h-10"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="font-serif text-2xl font-medium text-deepBurgundy">Upload Your Outfit Image</p>
+                            <p class="text-sm text-charcoal/60">Drag and drop your image here, or browse your gallery</p>
+                        </div>
+                        <div class="inline-flex items-center space-x-4 text-xs text-charcoal/50 font-medium">
+                            <span>Supports JPG, PNG, WEBP</span>
+                            <span>•</span>
+                            <span>Mobile Camera Ready</span>
+                        </div>
+                        <div class="pt-4">
+                            <span class="px-8 py-3 bg-roseGold text-white font-medium text-sm tracking-wider uppercase rounded-full shadow-md group-hover:bg-roseGold/90 transition">Choose Image</span>
+                        </div>
+                    </div>
+
+                    <!-- Image Preview (Hidden by default) -->
+                    <div id="preview-container" class="hidden space-y-6">
+                        <div class="relative w-64 h-64 mx-auto rounded-2xl overflow-hidden shadow-lg border border-roseGold/30">
+                            <img id="image-preview" src="" alt="Outfit Preview" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white font-medium text-sm">Change Image</div>
+                        </div>
+                        <p id="file-name" class="text-sm font-medium text-charcoal/80"></p>
+                        <div class="flex justify-center space-x-4 pt-2">
+                            <button type="button" onclick="event.stopPropagation(); resetUpload()" class="px-6 py-2.5 border border-roseGold/40 text-charcoal/70 hover:bg-roseGold/10 rounded-full font-medium text-xs uppercase tracking-wider transition">Cancel</button>
+                            <button type="button" onclick="event.stopPropagation(); startStyling()" class="px-8 py-2.5 bg-deepBurgundy text-white hover:bg-deepBurgundy/90 rounded-full font-medium text-xs uppercase tracking-widest shadow-lg shadow-deepBurgundy/20 transition flex items-center space-x-2">
+                                <span>Analyze & Style</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State (Hidden by default) -->
+            <div id="loading-card" class="hidden glass-card rounded-3xl p-12 text-center shadow-xl space-y-8 animate-pulse">
+                <div class="relative w-24 h-24 mx-auto">
+                    <div class="absolute inset-0 rounded-full border-4 border-roseGold/20 animate-ping"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-roseGold border-t-transparent animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-deepBurgundy">
+                        <i data-lucide="sparkles" class="w-8 h-8"></i>
+                    </div>
+                </div>
+                <div class="space-y-3 max-w-md mx-auto">
+                    <h3 class="font-serif text-3xl font-bold text-deepBurgundy">Curating Your Bespoke Look</h3>
+                    <p id="loading-step" class="text-sm text-charcoal/70 font-light">Multimodal AI is analyzing your outfit's neckline, color harmony, and embroidery craftsmanship...</p>
+                </div>
+                <div class="max-w-xs mx-auto h-1.5 bg-roseGold/20 rounded-full overflow-hidden">
+                    <div class="w-full h-full bg-roseGold shimmer"></div>
+                </div>
+            </div>
+
+            <!-- Results Page (Hidden by default) -->
+            <div id="results-card" class="hidden space-y-12 animate-fade-in">
+                
+                <!-- Top Header / Action Bar -->
+                <div class="flex flex-col md:flex-row items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-roseGold/20 gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-xl overflow-hidden shadow border border-roseGold/30 flex-shrink-0">
+                            <img id="result-thumb" src="" alt="Thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-xl font-bold text-deepBurgundy">Your Bespoke Styling Match</h3>
+                            <p class="text-xs text-charcoal/60 uppercase tracking-wider font-medium">AI Luxury Stylist Consultation</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
+                        <button onclick="resetUpload()" class="px-5 py-2.5 border border-roseGold/40 text-charcoal hover:bg-roseGold/10 rounded-full font-medium text-xs uppercase tracking-wider transition flex items-center space-x-2 w-full md:w-auto justify-center">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            <span>Style Another Outfit</span>
+                        </button>
+                        <button onclick="window.print()" class="px-5 py-2.5 bg-deepBurgundy text-white hover:bg-deepBurgundy/90 rounded-full font-medium text-xs uppercase tracking-wider shadow shadow-deepBurgundy/20 transition flex items-center space-x-2 w-full md:w-auto justify-center">
+                            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                            <span>Share Lookbook</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Two Column Grid: Analysis & Explanation -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Feature 2: AI Outfit Analysis -->
+                    <div class="glass-card p-8 rounded-3xl shadow-lg border border-roseGold/20 md:col-span-1 space-y-6 self-start bg-white/80">
+                        <div class="flex items-center space-x-3 border-b border-roseGold/20 pb-4">
+                            <i data-lucide="scan-face" class="w-6 h-6 text-roseGold"></i>
+                            <h4 class="font-serif text-xl font-bold text-deepBurgundy">Outfit Analysis</h4>
+                        </div>
+                        <div class="space-y-4 text-sm">
+                            <div>
+                                <p class="text-xs text-charcoal/50 uppercase tracking-widest font-medium mb-1">Outfit Type</p>
+                                <p id="ana-type" class="font-medium text-charcoal text-base"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-charcoal/50 uppercase tracking-widest font-medium mb-1">Neckline Cut</p>
+                                <p id="ana-neckline" class="font-medium text-charcoal text-base"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-charcoal/50 uppercase tracking-widest font-medium mb-1">Embroidery Craftsmanship</p>
+                                <p id="ana-embroidery" class="font-medium text-charcoal text-base"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-charcoal/50 uppercase tracking-widest font-medium mb-1">Fashion Aesthetic</p>
+                                <p id="ana-vibe" class="font-medium text-charcoal text-base"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-charcoal/50 uppercase tracking-widest font-medium mb-1">Occasion Suitability</p>
+                                <p id="ana-occasion" class="font-medium text-charcoal text-base"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-charcoal/50 uppercase tracking-widest font-medium mb-2">Dominant Colors</p>
+                                <div id="ana-colors" class="flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4: AI Styling Explanation & Skin Tone Harmony -->
+                    <div class="glass-card p-8 rounded-3xl shadow-lg border border-roseGold/20 md:col-span-2 space-y-6 bg-gradient-to-br from-white/90 via-white/95 to-mutedBlush/40 flex flex-col justify-between">
+                        <div class="space-y-6">
+                            <div class="flex items-center space-x-3 border-b border-roseGold/20 pb-4">
+                                <i data-lucide="quote" class="w-6 h-6 text-roseGold"></i>
+                                <h4 class="font-serif text-2xl font-bold text-deepBurgundy">Stylist's Editorial Note</h4>
+                            </div>
+                            <p id="styling-explanation" class="font-serif text-xl text-charcoal/80 leading-relaxed italic"></p>
+                            
+                            <!-- Moved Ideal Skin / Color Tone Match here for perfect vertical balance -->
+                            <div class="pt-6 border-t border-roseGold/15 space-y-3">
+                                <div class="flex items-center space-x-2 text-roseGold">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    <p class="text-xs uppercase tracking-widest font-semibold">Ideal Skin / Color Tone Match</p>
+                                </div>
+                                <p id="ana-colortone" class="font-medium text-deepBurgundy bg-white/80 backdrop-blur-md px-6 py-5 rounded-2xl border border-roseGold/30 text-sm leading-relaxed shadow-sm"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 pt-6 border-t border-roseGold/10 text-xs text-charcoal/60 uppercase tracking-widest font-medium mt-6">
+                            <i data-lucide="award" class="w-4 h-4 text-luxuryGold"></i>
+                            <span>Verified by Aura Luxury AI Styling Engine</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Feature 3: Jewellery Recommendations Grid -->
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-serif text-3xl font-bold text-deepBurgundy">Curated Jewellery Pairings</h4>
+                        <span class="text-xs font-medium text-roseGold uppercase tracking-widest">Perfectly Balanced Accessories</span>
+                    </div>
+                    
+                    <!-- Interactive Filter Pills -->
+                    <div class="flex flex-wrap items-center gap-2 border-b border-roseGold/15 pb-4">
+                        <button id="filter-all" onclick="filterRecommendations('all', this)" class="filter-btn px-4 py-1.5 bg-deepBurgundy text-white rounded-full text-xs font-medium uppercase tracking-wider transition shadow-sm">✨ All Pieces <span class="count-badge"></span></button>
+                        <button id="filter-earrings" onclick="filterRecommendations('earrings', this)" class="filter-btn px-4 py-1.5 bg-roseGold/15 text-deepBurgundy hover:bg-roseGold/25 rounded-full text-xs font-medium uppercase tracking-wider transition border border-roseGold/20">💎 Earrings <span class="count-badge"></span></button>
+                        <button id="filter-necklace" onclick="filterRecommendations('necklace', this)" class="filter-btn px-4 py-1.5 bg-roseGold/15 text-deepBurgundy hover:bg-roseGold/25 rounded-full text-xs font-medium uppercase tracking-wider transition border border-roseGold/20">👑 Neckpieces <span class="count-badge"></span></button>
+                        <button id="filter-bangles" onclick="filterRecommendations('bangles', this)" class="filter-btn px-4 py-1.5 bg-roseGold/15 text-deepBurgundy hover:bg-roseGold/25 rounded-full text-xs font-medium uppercase tracking-wider transition border border-roseGold/20">🌟 Bangles & Kadas <span class="count-badge"></span></button>
+                        <button id="filter-rings" onclick="filterRecommendations('rings', this)" class="filter-btn px-4 py-1.5 bg-roseGold/15 text-deepBurgundy hover:bg-roseGold/25 rounded-full text-xs font-medium uppercase tracking-wider transition border border-roseGold/20">💍 Rings & Headpieces <span class="count-badge"></span></button>
+                    </div>
+
+                    <div id="recommendations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Dynamic Cards Go Here -->
+                    </div>
+                </div>
+
+                <!-- Feature 5: Shopping Suggestions -->
+                <div class="glass-card p-8 rounded-3xl shadow-lg border border-roseGold/20 space-y-6 bg-white/80">
+                    <div class="flex items-center space-x-3 border-b border-roseGold/20 pb-4">
+                        <i data-lucide="shopping-bag" class="w-6 h-6 text-roseGold"></i>
+                        <h4 class="font-serif text-2xl font-bold text-deepBurgundy">Smart Marketplace Lookups</h4>
+                    </div>
+                    <p class="text-sm text-charcoal/70 font-light">We have generated intelligent, optimized search queries for top luxury and fashion platforms so you can easily acquire these matching styles.</p>
+                    <div id="shopping-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Dynamic Shopping Links Go Here -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-white mt-20 border-t border-charcoal">
+        <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <span class="p-2 bg-roseGold/20 rounded-full text-roseGold">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </span>
+                <h2 class="font-serif text-xl font-bold tracking-wide text-white">Aura <span class="font-sans font-light text-base text-roseGold tracking-widest uppercase">Stylist</span></h2>
+            </div>
+            <p class="text-xs text-white/50 font-light tracking-wider uppercase">© 2026 AI Jewellery Stylist MVP. Built on Session 5 Multimodal Architecture.</p>
+        </div>
+    </footer>
+
+    <!-- Wardrobe Modal (Hidden by default) -->
+    <div id="wardrobe-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-all">
+        <div class="glass-card bg-cream/95 w-full max-w-4xl max-h-[85vh] rounded-3xl shadow-2xl border border-roseGold/40 flex flex-col overflow-hidden">
+            <div class="p-6 border-b border-roseGold/20 flex items-center justify-between bg-white/80 backdrop-blur-md">
+                <div class="flex items-center space-x-3">
+                    <i data-lucide="bookmark" class="w-6 h-6 text-roseGold"></i>
+                    <h3 class="font-serif text-2xl font-bold text-deepBurgundy">My Personal Jewellery Wardrobe</h3>
+                </div>
+                <button onclick="closeWardrobeModal()" class="p-2 hover:bg-roseGold/10 rounded-full text-charcoal/70 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="wardrobe-items-container" class="p-6 overflow-y-auto flex-grow grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamic Wardrobe Items Go Here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Toast Notifications Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-3 pointer-events-none"></div>
+
+    <script>
+        let currentBase64 = '';
+        let lastData = null;
+
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate format
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please upload a valid JPG, PNG, or WEBP image.');
+                return;
+            }
+
+            // Validate size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Image file size must be less than 10MB.');
+                return;
+            }
+
+            document.getElementById('file-name').innerText = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentBase64 = e.target.result;
+                document.getElementById('image-preview').src = currentBase64;
+                document.getElementById('result-thumb').src = currentBase64;
+                
+                // Switch view
+                document.getElementById('upload-placeholder').classList.add('hidden');
+                document.getElementById('preview-container').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetUpload() {
+            currentBase64 = '';
+            document.getElementById('file-input').value = '';
+            document.getElementById('upload-placeholder').classList.remove('hidden');
+            document.getElementById('preview-container').classList.add('hidden');
+            document.getElementById('upload-card').classList.remove('hidden');
+            document.getElementById('loading-card').classList.add('hidden');
+            document.getElementById('results-card').classList.add('hidden');
+        }
+
+        async function startStyling() {
+            if (!currentBase64) return;
+
+            // Show loading state
+            document.getElementById('upload-card').classList.add('hidden');
+            document.getElementById('loading-card').classList.remove('hidden');
+
+            // Dynamic loading messages
+            const steps = [
+                "Multimodal AI is analyzing your outfit's neckline, color harmony, and embroidery craftsmanship...",
+                "Consulting expert styling guidelines for Indian ethnic and modern fashion balance...",
+                "Curating matching earrings, necklaces, and statement accessories...",
+                "Synthesizing editorial styling explanations and optimizing smart shopping keywords..."
+            ];
+            let stepIdx = 0;
+            const stepInterval = setInterval(() => {
+                stepIdx = (stepIdx + 1) % steps.length;
+                document.getElementById('loading-step').innerText = steps[stepIdx];
+            }, 3000);
+
+            try {
+                const response = await fetch('/api/stylist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: currentBase64 })
+                });
+
+                clearInterval(stepInterval);
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || 'Styling analysis failed');
+                }
+
+                const data = await response.json();
+                lastData = data;
+                renderResults(data);
+
+            } catch (error) {
+                clearInterval(stepInterval);
+                alert(`Error: ${error.message}`);
+                resetUpload();
+            }
+        }
+
+        function renderResults(data) {
+            // Hide loading, show results
+            document.getElementById('loading-card').classList.add('hidden');
+            document.getElementById('results-card').classList.remove('hidden');
+            triggerGoldDustSplash();
+
+            const ana = data.outfit_analysis || {};
+            document.getElementById('ana-type').innerText = ana.outfit_type || 'Elegant Ensemble';
+            document.getElementById('ana-neckline').innerText = ana.neckline || 'Classic Cut';
+            document.getElementById('ana-embroidery').innerText = ana.embroidery_level || 'Subtle Details';
+            document.getElementById('ana-vibe').innerText = ana.style_vibe || 'Modern Elegance';
+            document.getElementById('ana-occasion').innerText = ana.occasion_fit || 'Festive / Celebration';
+            document.getElementById('ana-colortone').innerText = ana.ideal_color_tone || 'Warm / Neutral Palette Match';
+
+
+            // Dominant Colors
+            const colorsContainer = document.getElementById('ana-colors');
+            colorsContainer.innerHTML = '';
+            (ana.dominant_colors || []).forEach(c => {
+                const span = document.createElement('span');
+                span.className = 'px-3 py-1 bg-roseGold/15 text-deepBurgundy rounded-full text-xs font-medium border border-roseGold/30';
+                span.innerText = c;
+                colorsContainer.appendChild(span);
+            });
+
+            // Styling Explanation
+            document.getElementById('styling-explanation').innerText = `“${data.styling_explanation || 'Your outfit pairs beautifully with balanced, elegant jewellery.'}”`;
+
+            // Recommendations Grid
+            const recGrid = document.getElementById('recommendations-grid');
+            recGrid.innerHTML = '';
+            const recs = data.recommendations || [];
+            
+            // Update dynamic filter badge counts
+            document.querySelector('#filter-all .count-badge').innerText = `(${recs.length})`;
+            document.querySelector('#filter-earrings .count-badge').innerText = `(${recs.filter(r => r.jewellery_type.toLowerCase().includes('earring')).length})`;
+            document.querySelector('#filter-necklace .count-badge').innerText = `(${recs.filter(r => r.jewellery_type.toLowerCase().includes('necklace') || r.jewellery_type.toLowerCase().includes('choker')).length})`;
+            document.querySelector('#filter-bangles .count-badge').innerText = `(${recs.filter(r => r.jewellery_type.toLowerCase().includes('bangle') || r.jewellery_type.toLowerCase().includes('kada')).length})`;
+            document.querySelector('#filter-rings .count-badge').innerText = `(${recs.filter(r => r.jewellery_type.toLowerCase().includes('ring') || r.jewellery_type.toLowerCase().includes('headpiece') || r.jewellery_type.toLowerCase().includes('hair')).length})`;
+
+            function getBackupImage(rec) {
+                if (rec.image_url && rec.image_url.startsWith('http')) return rec.image_url;
+                const t = (rec.jewellery_type || '').toLowerCase();
+                if (t.includes('earring')) return 'https://everstylish.com/media/catalog/product/cache/32d6a1cc700912c0dcf6eda1e76255f8/j/e/jew1109578-2-2.jpg';
+                if (t.includes('neck') || t.includes('choker')) return 'https://everstylish.com/media/catalog/product/cache/32d6a1cc700912c0dcf6eda1e76255f8/j/e/jew1110418-m2.jpg';
+                if (t.includes('bangle') || t.includes('kada') || t.includes('bracelet')) return 'https://everstylish.com/media/catalog/product/cache/32d6a1cc700912c0dcf6eda1e76255f8/j/e/jew1104298-7.jpg';
+                if (t.includes('ring')) return 'https://everstylish.com/media/catalog/product/cache/32d6a1cc700912c0dcf6eda1e76255f8/j/e/jew1108157-2-2.jpg';
+                if (t.includes('tikka') || t.includes('head') || t.includes('hair')) return 'https://everstylish.com/media/catalog/product/cache/32d6a1cc700912c0dcf6eda1e76255f8/j/e/jew1107755-3.jpg';
+                return 'https://everstylish.com/media/catalog/product/cache/32d6a1cc700912c0dcf6eda1e76255f8/j/e/jew1110418-m2.jpg';
+            }
+
+            recs.forEach((rec, idx) => {
+                const card = document.createElement('div');card.setAttribute('data-type', rec.jewellery_type.toLowerCase());
+                card.className = 'dynamic-card rec-card glass-card p-8 rounded-3xl shadow-lg border border-roseGold/30 space-y-6 bg-gradient-to-br from-white via-white/95 to-mutedBlush/10';
+                card.innerHTML = `
+                    <div class="h-64 w-full rounded-2xl overflow-hidden mb-6 shadow-sm border border-roseGold/20 relative group bg-cream/30">
+                        <img src="${getBackupImage(rec)}" alt="${rec.jewellery_type}" class="w-full h-full object-cover object-center group-hover:scale-105 transition transform duration-500">
+                        <div class="absolute top-3 right-3 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold text-deepBurgundy shadow-sm uppercase tracking-widest border border-roseGold/30">${rec.size_intensity || 'Elegant'}</div>
+                    </div>
+                    <div class="flex items-start justify-between border-b border-roseGold/20 pb-4">
+                        <div class="space-y-1">
+                            <h5 class="font-serif text-3xl font-bold text-deepBurgundy pt-1">${rec.jewellery_type}</h5>
+                        </div>
+                        <button onclick="saveToWardrobe(${idx})" class="px-5 py-2.5 bg-roseGold/15 hover:bg-roseGold text-deepBurgundy hover:text-white rounded-2xl shadow-sm transition group/btn flex items-center space-x-2 text-xs font-medium uppercase tracking-wider border border-roseGold/20">
+                            <i data-lucide="bookmark" class="w-4 h-4"></i>
+                            <span>Save to Wardrobe</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-xs pt-1 bg-cream/50 p-5 rounded-2xl border border-roseGold/15">
+                        <div>
+                            <p class="text-charcoal/50 uppercase tracking-wider font-semibold mb-1 text-[10px]">Style Architecture</p>
+                            <p class="font-semibold text-charcoal text-sm">${rec.style}</p>
+                        </div>
+                        <div>
+                            <p class="text-charcoal/50 uppercase tracking-wider font-semibold mb-1 text-[10px]">Material Composition</p>
+                            <p class="font-semibold text-charcoal text-sm">${rec.material}</p>
+                        </div>
+                        <div class="col-span-2 pt-2 border-t border-roseGold/10">
+                            <p class="text-charcoal/50 uppercase tracking-wider font-semibold mb-1 text-[10px]">Finish & Color Harmony</p>
+                            <p class="font-semibold text-deepBurgundy text-sm">${rec.finish_color}</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-roseGold/15">
+                        <p class="text-xs text-charcoal/80 leading-relaxed italic"><span class="font-semibold text-deepBurgundy not-italic block mb-1 text-sm">Stylist Note:</span> “${rec.styling_notes}”</p>
+                    </div>
+                `;
+                recGrid.appendChild(card);
+            });
+
+            // Shopping Suggestions Grid
+            const shopGrid = document.getElementById('shopping-grid');
+            shopGrid.innerHTML = '';
+            (data.shopping_suggestions || []).forEach(shop => {
+                const card = document.createElement('a');
+                card.href = shop.search_url || '#';
+                card.target = '_blank';
+                card.className = 'p-5 rounded-2xl border border-roseGold/30 bg-cream/50 hover:bg-roseGold/10 transition group block space-y-3 shadow-sm hover:shadow';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="font-serif font-bold text-lg text-deepBurgundy group-hover:text-roseGold transition">${shop.platform}</span>
+                        <i data-lucide="external-link" class="w-4 h-4 text-charcoal/40 group-hover:text-roseGold transition transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+                    </div>
+                    <p class="text-xs text-charcoal/70 font-medium line-clamp-2">${shop.search_query}</p>
+                    <div class="text-[10px] font-semibold text-roseGold uppercase tracking-widest pt-1 flex items-center space-x-1">
+                        <span>Explore Marketplace</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                    </div>
+                `;
+                shopGrid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        async function saveToWardrobe(idx) {
+            if (!lastData || !lastData.recommendations) return;
+            const rec = lastData.recommendations[idx];
+            const ana = lastData.outfit_analysis || {};
+            
+            const item = {
+                id: 'item_' + Date.now() + '_' + idx,
+                outfit_type: ana.outfit_type || 'Elegant Ensemble',
+                outfit_image: currentBase64 || '',
+                jewellery_type: rec.jewellery_type || '',
+                style: rec.style || '',
+                material: rec.material || '',
+                finish_color: rec.finish_color || '',
+                styling_notes: rec.styling_notes || '',
+                image_url: rec.image_url || '',
+                saved_at: new Date().toLocaleDateString()
+            };
+
+            try {
+                const res = await fetch('/api/wardrobe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(item)
+                });
+                if (res.ok) {
+                    showToast('✨ Successfully saved to your Personal Jewellery Wardrobe!');
+                    loadWardrobe();
+                }
+            } catch (err) {
+                showToast('⚠️ Failed to save item.');
+            }
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'glass-card bg-deepBurgundy text-white px-6 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-medium tracking-wide animate-fade-in pointer-events-auto border border-roseGold/30';
+            toast.innerHTML = `<span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition', 'duration-500');
+                setTimeout(() => toast.remove(), 500);
+            }, 3500);
+        }
+
+        function filterRecommendations(type, btn) {
+            // Update button styles
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.className = 'filter-btn px-4 py-1.5 bg-roseGold/15 text-deepBurgundy hover:bg-roseGold/25 rounded-full text-xs font-medium uppercase tracking-wider transition border border-roseGold/20';
+            });
+            btn.className = 'filter-btn px-4 py-1.5 bg-deepBurgundy text-white rounded-full text-xs font-medium uppercase tracking-wider transition shadow-sm';
+
+            // Filter cards
+            document.querySelectorAll('.rec-card').forEach(card => {
+                if (type === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const cardType = card.getAttribute('data-type') || '';
+                    if (cardType.includes(type) || (type === 'rings' && (cardType.includes('headpiece') || cardType.includes('hair'))) || (type === 'bangles' && cardType.includes('kada')) || (type === 'necklace' && cardType.includes('choker'))) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.classList.add('opacity-0', 'pointer-events-none');
+                }
+            }, 1600);
+        });
+
+        function triggerGoldDustSplash() {
+            const container = document.body;
+            for (let i = 0; i < 40; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'gold-dust w-2 h-2 rounded-full bg-gradient-to-tr from-luxuryGold via-roseGold to-white shadow-glow z-50';
+                dust.style.left = Math.random() * window.innerWidth + 'px';
+                dust.style.top = (window.innerHeight - 100) + 'px';
+                dust.style.width = (Math.random() * 6 + 4) + 'px';
+                dust.style.height = dust.style.width;
+                dust.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+                container.appendChild(dust);
+                setTimeout(() => dust.remove(), 2500);
+            }
+        }
+
+        async function loadWardrobe() {
+            try {
+                const res = await fetch('/api/wardrobe');
+                const items = await res.json();
+                const container = document.getElementById('wardrobe-items-container');
+                container.innerHTML = '';
+                
+                // Update badge counter
+                const badge = document.getElementById('wardrobe-badge');
+                if (badge) {
+                    badge.innerText = items.length;
+                    badge.style.display = items.length > 0 ? 'inline-block' : 'none';
+                }
+                
+                if (items.length === 0) {
+                    container.innerHTML = '<div class="col-span-2 text-center py-12 text-charcoal/50 font-light">Your wardrobe is currently empty. Save your favorite jewellery recommendations to see them here!</div>';
+                    return;
+                }
+
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'glass-card p-6 rounded-3xl shadow-md border border-roseGold/20 space-y-4 bg-white flex flex-col justify-between';
+                    div.innerHTML = `
+                        <div>
+                            <div class="flex items-center space-x-4 border-b border-roseGold/15 pb-4 mb-4">
+                                <img src="${item.outfit_image || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=100&auto=format&fit=crop'}" alt="Outfit" class="w-16 h-16 rounded-2xl object-cover border border-roseGold/30 shadow-sm flex-shrink-0">
+                                <div>
+                                    <h5 class="font-serif text-xl font-bold text-deepBurgundy">${item.jewellery_type}</h5>
+                                    <p class="text-xs text-roseGold font-medium uppercase tracking-widest">${item.outfit_type} Match</p>
+                                </div>
+                            </div>
+                            <div class="h-48 w-full rounded-2xl overflow-hidden mb-4 shadow-sm border border-roseGold/20 relative bg-cream/30">
+                                <img src="${item.image_url || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop'}" alt="Jewellery" class="w-full h-full object-cover object-center">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-xs pt-1 bg-cream/50 p-4 rounded-2xl border border-roseGold/15 mb-4">
+                                <div><p class="text-charcoal/50 uppercase tracking-wider font-semibold mb-0.5 text-[10px]">Style</p><p class="font-semibold text-charcoal">${item.style}</p></div>
+                                <div><p class="text-charcoal/50 uppercase tracking-wider font-semibold mb-0.5 text-[10px]">Material</p><p class="font-semibold text-charcoal">${item.material}</p></div>
+                            </div>
+                            <p class="text-xs text-charcoal/80 leading-relaxed italic pt-2"><span class="font-semibold text-deepBurgundy not-italic block mb-1 text-sm">Note:</span> “${item.styling_notes}”</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-roseGold/15 mt-4">
+                            <span class="text-[10px] text-charcoal/40 uppercase tracking-widest">Saved ${item.saved_at}</span>
+                            <button onclick="deleteFromWardrobe('${item.id}')" class="px-4 py-1.5 border border-red-200 hover:bg-red-50 text-red-600 rounded-full text-xs font-medium uppercase tracking-wider transition flex items-center space-x-1">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                <span>Remove</span>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+                lucide.createIcons();
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function openWardrobeModal() {
+            loadWardrobe();
+            document.getElementById('wardrobe-modal').classList.remove('hidden');
+        }
+
+        function closeWardrobeModal() {
+            document.getElementById('wardrobe-modal').classList.add('hidden');
+        }
+
+        async function deleteFromWardrobe(id) {
+            try {
+                const res = await fetch('/api/wardrobe/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                    loadWardrobe();
+                }
+            } catch (err) {
+                alert('Failed to delete item.');
+            }
+        }
+    </script>
+</body>
+</html>
+
