@@ -9,6 +9,14 @@
 
 ---
 
+## 🎥 Live Platform Demonstration
+
+[![Aura Atelier Demo](https://img.youtube.com/vi/CrxVtq90mRI/0.jpg)](https://youtu.be/CrxVtq90mRI)
+
+*Click the thumbnail above to watch the full video demonstration of the Aura Atelier Luxury AI Jewellery Stylist in action!*
+
+---
+
 ## 🌟 Key Architectural Highlights
 
 ### 1. Multimodal AI Outfit Analysis
