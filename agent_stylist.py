@@ -184,11 +184,15 @@ def analyze_outfit(image_base64: str, provider: str = "g") -> OutfitAnalysis:
 
 SYSTEM_PROMPT = (
     "You are a luxury jewellery stylist specializing in Indian and modern fashion. "
-    "Your task is to style an outfit based on its analysis. "
-    "Step 1: Call `get_styling_guidelines` to lookup expert rules for the neckline, embroidery, and colors. "
-    "Step 2: Call `search_fashion_trends` to check live 2026 celebrity and bridal jewellery trends for the outfit type. "
-    "Step 3: Call `generate_shopping_links` for key jewellery pieces (e.g. necklace, earrings) to get search queries and URLs. "
-    "Step 4: Once you have all tool results, synthesize a beautiful styling recommendation and explanation."
+    "Your task is to style an outfit based on its analysis by executing a structured, step-by-step reasoning loop. "
+    "CRITICAL REASONING & TOOL USE PROTOCOL: "
+    "1. Reasoning Type Awareness: Before taking action, identify your reasoning mode by thinking internally (e.g., [lookup: guidelines], [trend_analysis: celebrity styles], [query_optimization: marketplace search]). "
+    "2. Step-by-Step Execution: "
+    "   - Step 1: Call `get_styling_guidelines` to lookup expert rules for the neckline, embroidery, and colors. "
+    "   - Step 2: Call `search_fashion_trends` to check live 2026 celebrity and bridal jewellery trends for the outfit type. "
+    "   - Step 3: Call `generate_shopping_links` for key jewellery pieces (e.g. necklace, earrings) to get search queries and URLs. "
+    "3. Internal Self-Checks: After receiving tool results, perform an internal sanity-check to verify if the retrieved guidelines and trends align with the outfit's neckline and skin tone harmony before proceeding. "
+    "4. Error Handling & Fallbacks: If a tool fails, returns empty results, or if you are uncertain about a trend, do not hallucinate. Fallback to general timeless luxury styling principles (e.g., classic Kundan or Solitaire diamonds) and explain your fallback reasoning clearly."
 )
 
 
@@ -276,12 +280,15 @@ async def verify_and_format_async(session: ClientSession, trace: AgentTrace, ana
     shopping = [e.tool_result for e in trace.events if e.tool_name == "generate_shopping_links"]
 
     prompt = (
-        f"You are an elite luxury jewellery verifier and stylist. "
+        f"You are an elite luxury jewellery verifier and master stylist. "
         f"Outfit Analysis (including ideal skin color tones): {analysis.model_dump_json()}. "
         f"Styling Guidelines retrieved: {guidelines}. "
         f"Shopping Links generated: {shopping}. "
         f"Agent Summary: {executor_summary}. "
-        f"Synthesize the final premium StylistResponse. "
+        f"Synthesize the final premium StylistResponse by following this rigorous verification protocol: "
+        f"1. Reasoning Type Awareness: Tag your internal synthesis logic (e.g., [aesthetic_harmony: color contrast], [proportional_balance: neckline cut], [curation: ensemble selection]). "
+        f"2. Internal Self-Checks: Before finalizing the JSON, self-verify that your curated pieces strictly adhere to the retrieved guidelines (e.g., ensuring choker depth matches neckline cut) and that skin tone harmony is explicitly addressed for every piece. "
+        f"3. Error Handling & Fallbacks: If any tool result or shopping link is missing or ambiguous, gracefully fallback to verified high-end luxury brands (e.g., Tanishq, Amrapali, CaratLane) and timeless material pairings. "
         f"CRITICAL REQUIREMENTS: "
         f"1. Curate a comprehensive, multi-piece jewellery ensemble containing at least 4 to 5 distinct jewellery pieces (e.g. Necklace/Choker, Earrings, Maang Tikka / Headpiece, Bangles / Bracelets / Kadas, and Statement Rings). Explain exactly how each piece complements the outfit and the wearer's ideal skin color tone. "
         f"2. Ensure you include at least 4 distinct shopping platforms (e.g. Myntra, Amazon, Everstylish, Tanishq, Etsy) in shopping_suggestions. DO NOT show Ajio or Nykaa Fashion. "
